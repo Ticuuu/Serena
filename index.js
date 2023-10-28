@@ -38,7 +38,6 @@ bot.once('ready', () => {
     { name: 'encuesta', description: 'Responder a una encuesta 📊' },
     { name: 'botinfo', description: 'Obtener información sobre la bot 🤖' },
     { name: 'aeryne', description: 'Descubre quién es la mejor Lissandra del servidor 👑' },
-    { name: 'deafenoff', description: '🔊 Quita el estado de ensordecer y silenciar el chat de voz.'},
     { 
       name: 'deafen',
       description: '🔇 Silencia el chat de voz para evitar distracciones o interacciones no deseadas.' 
@@ -111,7 +110,6 @@ bot.on('interactionCreate', async (interaction) => {
     // Verifica si el autor de la interacción está en un canal de voz
     if (interaction.member.voice.channel) {
       const voiceState = interaction.member.voice;
-      console.log(voiceState)
       try {
         if (voiceState.serverMute == false){
           // Ensordece al usuario
@@ -137,26 +135,6 @@ bot.on('interactionCreate', async (interaction) => {
     } else {
       interaction.reply('Debes estar en un canal de voz para usar este comando.');
     }
-  };
-  if (commandName === 'deafenoff') {
-    // Verifica si el autor de la interacción está en un canal de voz
-    if (interaction.member.voice.channel) {
-      const userVoiceState = interaction.member.voice;
-    
-      try {
-        // Quita el estado de ensordecer del usuario
-        await userVoiceState.setDeaf(false);
-        // Quita el estado de silenciar al usuario
-        await userVoiceState.setMute(false);
-    
-        interaction.reply(`¡Has sido desensordecido y desilenciado! 🔊🔉`);
-      } catch (error) {
-        console.error('Error al quitar el estado de ensordecer y silenciar al usuario:', error);
-        interaction.reply('No se pudo quitar el estado de ensordecer y silenciar. Asegúrate de que el bot tenga los permisos adecuados.');
-      }
-    } else {
-      interaction.reply('Debes estar en un canal de voz para usar este comando.');
-    }  
   };
     
   if (commandName === 'aeryne') {
