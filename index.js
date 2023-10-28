@@ -1,5 +1,5 @@
 const { Client, GatewayIntentBits, GuildMember } = require('discord.js');
-const sqlite3 = require('sqlite3').verbose();
+var mysql = require('mysql2');
 const axios = require('axios');
 const bot = new Client({
   intents: [
@@ -10,18 +10,34 @@ const bot = new Client({
   partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
-// Configura la base de datos SQLite
-const db = new sqlite3.Database('./experiencia.db');
 
-// Crea una tabla para almacenar la experiencia si no existe
-db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS experiencia (
-      usuario TEXT PRIMARY KEY,
-      experiencia INTEGER DEFAULT 0,
-      nivel INTEGER DEFAULT 1
-    )
-  `);
+// DB en MySQL (REEMPLAZAR VALORES POR VARIABLES DE ENTORNO EN PROD. NO SEAS GAY LUNARI)
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "root",
+  database: "serena"
+});
+
+function queryData(query){
+  con.query(query, (err, results) => {
+    if (err) throw err;
+    console.log('Data received from MySQL:');
+    console.log(results);
+  });
+}
+
+function insertData(query, values){
+  con.query(query, values, (err, results) => {
+    if (err) throw err;
+    console.log(`Inserted ${results.affectedRows} row(s)`);
+  });
+}
+
+
+con.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
 });
 
 bot.once('ready', () => {
@@ -150,11 +166,6 @@ https://www.op.gg/summoners/las/Aeryne `;
       await interaction.reply(response);
     }
   }
-  
-  if (commandName === 'feel') {
-    const response = `Amigo de Lunari, famoso por ser random.`;
-    await interaction.reply(response);
-  };
 
   if (commandName === 'botinfo') {
     const botVersion = '1.0.9';
